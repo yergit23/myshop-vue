@@ -11,6 +11,9 @@ export default {
   data() {
     return {
       products: [],
+      name: '',
+      email: '',
+      address: '',
     }
   },
 
@@ -57,6 +60,22 @@ export default {
 
     updateCart() {
       localStorage.setItem('cart', JSON.stringify(this.products))
+    },
+
+    storeOrder() {
+      this.axios.post('http://localhost:8876/api/orders', {
+        'products': this.products,
+        'name': this.name,
+        'email': this.email,
+        'address': this.address,
+        'total_price': this.totalPrice
+      })
+          .then( res => {
+            console.log(res);
+          })
+          .finally( v => {
+            $(document).trigger('initFilter')
+          })
     },
   },
 }
@@ -147,6 +166,12 @@ export default {
                                                                                                                                    type="submit">Update Cart</button> </div>
               </div>
             </div>
+          </div>
+          <div class="row w-25 mt-5">
+            <input type="text" v-model="name" placeholder="name" class="mb-2">
+            <input type="text" v-model="email" placeholder="email" class="mb-2">
+            <input type="text" v-model="address" placeholder="address" class="mb-2">
+            <input @click.prevent="storeOrder" type="submit" class="btn btn-primary" value="Оформить">
           </div>
           <div class="row pt-120">
             <div class="col-xl-6 col-lg-7 wow fadeInUp animated">
